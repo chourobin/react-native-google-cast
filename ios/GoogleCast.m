@@ -13,6 +13,11 @@ static NSString *const MEDIA_LOADED = @"GoogleCast:MediaLoaded";
 @implementation GoogleCast
 @synthesize bridge = _bridge;
 
+- (dispatch_queue_t)methodQueue
+{
+    return dispatch_get_main_queue();
+}
+
 RCT_EXPORT_MODULE();
 
 - (NSDictionary *)constantsToExport
@@ -40,7 +45,6 @@ RCT_EXPORT_METHOD(startScan)
     [_deviceScanner addListener:self];
     [_deviceScanner startScan];
     [_deviceScanner setPassiveScan:YES];
-
   });
 }
 
@@ -49,6 +53,7 @@ RCT_EXPORT_METHOD(stopScan)
   RCTLogInfo(@"stop chromecast!");
   dispatch_async(dispatch_get_main_queue(), ^{
     [_deviceScanner removeListener:self];
+    [_deviceScanner stopScan];
   });
 }
 
